@@ -45,19 +45,20 @@ def score_resume_with_llm(resume_text, criteria):
       }},
       "total_score": total (sum of all criterion scores)
     }}
+    Do not mention in the returned output that it is JSON format.
     """
 
     model = genai.GenerativeModel("gemini-pro")
     response = model.generate_content(prompt)
     result = response.text.strip()
-
+    
     # Convert response to dictionary (Ensure it's valid JSON)
     try:
         scores = json.loads(result)
     except json.JSONDecodeError:
         print("Invalid LLM response:", result)
         return None  # Handle errors gracefully
-
+    
     return scores
 
 # API Endpoint to process resumes and score them
@@ -70,6 +71,7 @@ async def score_resumes(
 
     for file in files:
         # Extract text from each resume
+        
         if file.filename.endswith(".pdf"):
             resume_text = extract_text_from_pdf(file.file)
         elif file.filename.endswith(".docx"):
@@ -79,7 +81,7 @@ async def score_resumes(
 
         # Get scores from LLM
         llm_result = score_resume_with_llm(resume_text, criteria)
-
+        
         if not llm_result or "scores" not in llm_result:
             continue  # Skip if LLM fails
 
@@ -92,7 +94,7 @@ async def score_resumes(
             **llm_result["scores"],
             "Total Score": llm_result["total_score"]
         })
-
+    
     # Convert results to a DataFrame
     df = pd.DataFrame(results)
 
