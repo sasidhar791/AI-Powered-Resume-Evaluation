@@ -108,7 +108,9 @@ Request Example (Using cURL):
 ```bash
 curl -X POST "http://127.0.0.1:8000/score-resumes" \
   -F "files=@resume1.pdf" \
-  -F "files=@resume2.docx"
+  -F "files=@resume2.docx" \
+  -F "tags=skills" \
+  -F "tags=certification"
 ```
 
 Response:
