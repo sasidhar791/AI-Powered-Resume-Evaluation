@@ -9,8 +9,8 @@ import pandas as pd
 
 app = FastAPI()
 
-# Set API Key
-GOOGLE_GEMINI_API_KEY = "AIzaSyDOzVV6yB3TphbYsquFYQLFisum7g_nzJk"
+# Set your OpenAI API key here
+GOOGLE_GEMINI_API_KEY = "add_your_google_gemini_api_key_here"
 genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
 
 # Function to extract text from PDF
