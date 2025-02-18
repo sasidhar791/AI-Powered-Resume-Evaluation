@@ -35,12 +35,12 @@ GOOGLE_GEMINI_API_KEY = "add_your_google_gemini_api_key_here"
 ```
 
 ## **2. Run the API**
-### **2.1 For extracting criteria task,**
+For extracting criteria task,
 ```bash
 uvicorn extract_criteria:app
 ```
 
-### **2.2 For scoring resume task,**
+For scoring resume task,
 ```bash
 uvicorn score_resume:app
 ```
