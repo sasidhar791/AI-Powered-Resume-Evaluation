@@ -51,13 +51,14 @@ Swagger UI available at: http://127.0.0.1:8000/docs
 
 
 ## **3. API endpoints**
-Extract criteria from Job description:
+
+### **3.1 Extracts ranking criteria from a job description **
 Endpoint:
 ```bash
 POST /extract-criteria
 ```
 
-## **3.1 Extracts ranking criteria from a job description **
+
 Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications".
 
 Request Example (Using cURL):
