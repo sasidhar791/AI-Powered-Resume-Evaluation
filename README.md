@@ -95,7 +95,7 @@ curl -X POST "http://127.0.0.1:8000/score-resumes" \
   -F "files=@resume2.docx"
 ```
 
-Response example:
+Response:
 📥 A downloadable Excel file (scored_resumes.xlsx) containing candidate scores.
 
 
