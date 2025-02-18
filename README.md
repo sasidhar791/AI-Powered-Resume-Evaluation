@@ -57,15 +57,16 @@ Endpoint:
 POST /extract-criteria
 ```
 
-Extracts ranking criteria (skills, experience, certifications) from a job description.
-Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications"
+Extracts ranking criteria from a job description.
+Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications".
 
 Request Example (Using cURL):
 ```bash
 curl -X POST "http://127.0.0.1:8000/extract-criteria" \
   -F "file=@job_description.pdf" \
   -F "tags=experience" \
-  -F "tags=description"
+  -F "tags=skills" \
+  -F "tags=certification"
 ```
 
 Response example:
