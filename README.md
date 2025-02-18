@@ -70,7 +70,7 @@ POST /extract-criteria
 ```
 
 
-Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications".
+Note that here if user doesn't provide desired criteria for ranking, criteria will be taken as "skills", "certifications", "experience", "qualifications" by default.
 
 Request Example (Using cURL):
 ```bash
