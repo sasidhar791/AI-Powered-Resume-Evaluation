@@ -1,24 +1,24 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import FileResponse
 from typing import List
 import pypdf
-import google.generativeai as genai
 import docx
 import io
 import pandas as pd
+import google.generativeai as genai
+import json
 
+# Initialize FastAPI app
 app = FastAPI()
 
-# Set your OpenAI API key here
+# Set your Google Gemini API key
 GOOGLE_GEMINI_API_KEY = "add_your_google_gemini_api_key_here"
 genai.configure(api_key=GOOGLE_GEMINI_API_KEY)
 
 # Function to extract text from PDF
 def extract_text_from_pdf(file):
     reader = pypdf.PdfReader(file)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+    text = "\n".join([page.extract_text() or "" for page in reader.pages])
     return text
 
 # Function to extract text from DOCX
@@ -27,76 +27,73 @@ def extract_text_from_docx(file):
     text = "\n".join([para.text for para in doc.paragraphs])
     return text
 
-# Function to extract ranking criteria from a resume/job description
-def extract_criteria_from_text(text):
+# Function to send criteria & resume text to LLM for scoring
+def score_resume_with_llm(resume_text, criteria):
     prompt = f"""
-    Given the following text (job description or resume), extract key ranking criteria such as skills, certifications, experience, and qualifications.
-    Include only 5 important criteria for ranking candidates. DO not include more than 5 criteria.
-    Text:
-    {text}
-    
-    Return the response as a structured list of key criteria.
+    You are an AI resume evaluator. Given the following resume and ranking criteria, assign a score (0-5) for each criterion.
+
+    **Ranking Criteria:** {criteria}
+
+    **Resume:** {resume_text}
+
+    Return the results in the following structured JSON format:
+    {{
+      "scores": {{
+        "Criterion 1": score (0-5),
+        "Criterion 2": score (0-5),
+        ...
+      }},
+      "total_score": total (sum of all criterion scores)
+    }}
     """
-    gemini_model = genai.GenerativeModel("gemini-pro")
-    response = gemini_model.generate_content(prompt)
-    criteria = response.text.strip().split("\n")
-    return criteria
 
-# Function to score a resume against extracted criteria
-def score_resume(text, criteria):
-    scores = {criterion: 0 for criterion in criteria}
-    total_score = 0
+    model = genai.GenerativeModel("gemini-pro")
+    response = model.generate_content(prompt)
+    result = response.text.strip()
 
-    for criterion in criteria:
-        # Simple scoring: Check if criterion words appear in the text
-        score = sum(1 for word in criterion.split() if word.lower() in text.lower())  # Basic word match
-        scores[criterion] = min(score, 5)  # Cap the score at 5
-        total_score += scores[criterion]
+    # Convert response to dictionary (Ensure it's valid JSON)
+    try:
+        scores = json.loads(result)
+    except json.JSONDecodeError:
+        print("Invalid LLM response:", result)
+        return None  # Handle errors gracefully
 
-    return scores, total_score
+    return scores
 
-# API Endpoint for scoring multiple resumes (with automatic criteria extraction)
+# API Endpoint to process resumes and score them
 @app.post("/score-resumes")
-async def score_resumes(files: List[UploadFile] = File(...)):
+async def score_resumes(
+    criteria: List[str] = Form(...),  # Accepts multiple ranking criteria
+    files: List[UploadFile] = File(...)  # Accepts multiple resume files
+):
     results = []
 
-    if not files:
-        return {"error": "No files uploaded"}
-
-    # Extract text from the first resume to generate criteria
-    first_file = files.pop(0)
-    if first_file.filename.endswith(".pdf"):
-        reference_text = extract_text_from_pdf(first_file.file)
-    elif first_file.filename.endswith(".docx"):
-        reference_text = extract_text_from_docx(first_file.file.read())
-    else:
-        return {"error": "Unsupported file format. Upload PDF or DOCX."}
-    
-    # Extract ranking criteria automatically
-    criteria = extract_criteria_from_text(reference_text)
-    
     for file in files:
+        # Extract text from each resume
         if file.filename.endswith(".pdf"):
-            text = extract_text_from_pdf(file.file)
+            resume_text = extract_text_from_pdf(file.file)
         elif file.filename.endswith(".docx"):
-            text = extract_text_from_docx(file.file.read())
+            resume_text = extract_text_from_docx(file.file.read())
         else:
             continue  # Skip unsupported files
 
-        # Score the resume against extracted criteria
-        scores, total_score = score_resume(text, criteria)
+        # Get scores from LLM
+        llm_result = score_resume_with_llm(resume_text, criteria)
+
+        if not llm_result or "scores" not in llm_result:
+            continue  # Skip if LLM fails
 
         # Extract candidate name (assuming filename represents name)
         candidate_name = file.filename.replace(".pdf", "").replace(".docx", "")
 
-        # Append result
+        # Store result
         results.append({
             "Candidate Name": candidate_name,
-            **scores,
-            "Total Score": total_score
+            **llm_result["scores"],
+            "Total Score": llm_result["total_score"]
         })
 
-    # Convert to DataFrame
+    # Convert results to a DataFrame
     df = pd.DataFrame(results)
 
     # Save as Excel file
