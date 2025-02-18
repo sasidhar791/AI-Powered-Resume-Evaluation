@@ -46,11 +46,12 @@ uvicorn score_resume:app
 ```
 
 The API will start at: http://127.0.0.1:8000
+
 Swagger UI available at: http://127.0.0.1:8000/docs
 
 
 ## **3. API endpoints**
-### **3.1 Extract criteria from Job description**
+Extract criteria from Job description:
 Endpoint:
 ```bash
 POST /extract-criteria
@@ -59,7 +60,7 @@ Description:
 Extracts ranking criteria (skills, experience, certifications) from a job description.
 Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications"
 
-####Request Example (Using cURL):
+Request Example (Using cURL):
 ```bash
 curl -X POST "http://127.0.0.1:8000/extract-criteria" \
   -F "file=@job_description.pdf" \
@@ -67,7 +68,7 @@ curl -X POST "http://127.0.0.1:8000/extract-criteria" \
   -F "tags=description"
 ```
 
-####Response example:
+Response example:
 ```bash
 {
   "criteria": [
@@ -87,14 +88,14 @@ POST /score-resumes
 Description:
 Scores multiple resumes against the extracted ranking criteria and returns an Excel report.
 
-####Request Example (Using cURL):
+Request Example (Using cURL):
 ```bash
 curl -X POST "http://127.0.0.1:8000/score-resumes" \
   -F "files=@resume1.pdf" \
   -F "files=@resume2.docx"
 ```
 
-####Response example:
+Response example:
 📥 A downloadable Excel file (scored_resumes.xlsx) containing candidate scores.
 
 Example Excel output:
