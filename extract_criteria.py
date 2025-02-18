@@ -1,10 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
-from pydantic import BaseModel
-import openai
 import pypdf
 import google.generativeai as genai
-import threading
-import uvicorn
 import docx
 import io
 
