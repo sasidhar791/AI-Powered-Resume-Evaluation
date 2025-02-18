@@ -52,7 +52,7 @@ Swagger UI available at: http://127.0.0.1:8000/docs
 
 ## **3. API endpoints**
 
-### **3.1 Extracts ranking criteria from a job description **
+### **3.1 Extracts ranking criteria from a job description**
 Endpoint:
 ```bash
 POST /extract-criteria
