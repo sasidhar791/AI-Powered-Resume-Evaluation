@@ -56,7 +56,7 @@ Endpoint:
 ```bash
 POST /extract-criteria
 ```
-Description:
+
 Extracts ranking criteria (skills, experience, certifications) from a job description.
 Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications"
 
@@ -85,7 +85,7 @@ Endpoint:
 POST /score-resumes
 ```
 
-Description:
+
 Scores multiple resumes against the extracted ranking criteria and returns an Excel report.
 
 Request Example (Using cURL):
@@ -98,12 +98,15 @@ curl -X POST "http://127.0.0.1:8000/score-resumes" \
 Response example:
 📥 A downloadable Excel file (scored_resumes.xlsx) containing candidate scores.
 
+
 Example Excel output:
 
-Candidate Name	Python Experience	Machine Learning	Certification XYZ	  Total Score
-John Doe	        5	                    4	              3	                 12
-Jane Smith	      4	                    3	              4	                 11
-Alan Brown	      3	                    5	              3	                 11
+| **Candidate Name**    | **Python Experience** | **Machine Learning** | **Certification XYZ** | **Total Score** |
+|-----------------------|-----------------------|----------------------|------------------------|-----------------|
+| John Doe             | 5                     | 4                    | 3                      | 12              |
+| Jane Smith           | 4                     | 3                    | 4                      | 11              |
+| Alan Brown           | 3                     | 5                    | 3                      | 11              |
+
 
 
 
