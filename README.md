@@ -57,7 +57,7 @@ Endpoint:
 POST /extract-criteria
 ```
 
-Extracts ranking criteria from a job description.
+## **3.1 Extracts ranking criteria from a job description **
 Note that here if user doesn't provide desired criteria for ranking, implicitly criteria will be taken as "skills", "certifications", "experience", "qualifications".
 
 Request Example (Using cURL):
