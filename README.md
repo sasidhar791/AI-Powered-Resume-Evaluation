@@ -14,6 +14,9 @@ This API provides two main functionalities:
 - `pip` installed
 
 
+
+
+
 ###  **1.2. Clone the Repository**
 To get started, clone this repository using:
 ```bash
@@ -21,11 +24,16 @@ git clone https://github.com/your-username/resume-ranking-api.git
 cd resume-ranking-api
 ```
 
+
+
+
 ### **1.3 Install Dependencies**
 Run the following command to install all required libraries:
 ```bash
 pip install -r requirements.txt
 ```
+
+
 
 ### **1.4 Set API key**
 Add API key in both the scripts,
@@ -33,6 +41,9 @@ Add API key in both the scripts,
 # Set your OpenAI API key here
 GOOGLE_GEMINI_API_KEY = "add_your_google_gemini_api_key_here"
 ```
+
+
+
 
 ## **2. Run the API**
 For extracting criteria task,
@@ -80,6 +91,9 @@ Response example:
   ]
 }
 ```
+
+
+
 
 ### **3.2 Score resume based on Job description**
 Endpoint:
